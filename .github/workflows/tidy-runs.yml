@@ -2,8 +2,8 @@ name: Tidy run history
 
 # Every Actions run records the account that started it. Runs here are started
 # from a personal account, so each finished run is deleted as soon as the
-# checks or a release complete, and once a day for anything missed. Only this
-# workflow's own latest run is ever left.
+# checks or a release complete, and once a day for anything missed. Left: this
+# workflow's own latest run, and the newest passing Validate run (HACS needs it).
 on:
   workflow_run:
     workflows: [Validate, Release]
@@ -25,6 +25,9 @@ jobs:
           REPO: ${{ github.repository }}
           SELF: ${{ github.run_id }}
         run: |
+          # Keep the newest successful Validate run: the HACS listing request
+          # has to link a passing HACS and hassfest run.
+          KEEP=$(gh api "repos/$REPO/actions/workflows/validate.yml/runs?status=success&per_page=1" -q '.workflow_runs[0].id // empty')
           gh api --paginate "repos/$REPO/actions/runs?status=completed&per_page=100" -q '.workflow_runs[].id' \
-            | { grep -vx "$SELF" || true; } \
+            | { grep -vx -e "$SELF" -e "${KEEP:-none}" || true; } \
             | while read -r id; do gh api -X DELETE "repos/$REPO/actions/runs/$id" >/dev/null || true; done
