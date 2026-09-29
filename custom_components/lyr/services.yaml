@@ -1,0 +1,52 @@
+play_prompt:
+  target:
+    entity:
+      integration: lyr
+      domain: media_player
+  fields:
+    prompt:
+      required: true
+      example: "ibiza sunset, slow and warm"
+      selector:
+        text:
+
+start_radio:
+  target:
+    entity:
+      integration: lyr
+      domain: media_player
+  fields:
+    artist:
+      required: false
+      example: "Nils Frahm"
+      selector:
+        text:
+
+play_search:
+  target:
+    entity:
+      integration: lyr
+      domain: media_player
+  fields:
+    query:
+      required: true
+      example: "Late Night Tales"
+      selector:
+        text:
+    kind:
+      required: false
+      default: any
+      selector:
+        select:
+          options:
+            - any
+            - playlist
+            - album
+            - artist
+            - track
+            - genre
+    shuffle:
+      required: false
+      default: false
+      selector:
+        boolean:

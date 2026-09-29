@@ -1,0 +1,77 @@
+{
+  "config": {
+    "flow_title": "{name}",
+    "step": {
+      "user": {
+        "title": "Connect to a Lyr Core",
+        "description": "The Lyr Core is the server every Lyr app talks to (not Lyr Server, which plays the music). It usually listens on port 3000.",
+        "data": {
+          "host": "Host",
+          "port": "Port",
+          "token": "API token (only if the Core has LYR_API_TOKEN set)"
+        }
+      },
+      "zeroconf_confirm": {
+        "title": "Lyr Core found",
+        "description": "Add the Lyr Core {name} at {host}?"
+      }
+    },
+    "error": {
+      "cannot_connect": "Could not reach a Lyr Core there.",
+      "core_too_old": "That Lyr Core is too old for Home Assistant: it has no /api/zones/now-playing. Update the Core first.",
+      "unknown": "Unexpected error."
+    },
+    "abort": {
+      "already_configured": "This Lyr Core is already set up.",
+      "cannot_connect": "Could not reach the Lyr Core that was found.",
+      "core_too_old": "That Lyr Core is too old for Home Assistant. Update the Core first."
+    }
+  },
+  "entity": {
+    "switch": {
+      "explicit_filter": {
+        "name": "Skip explicit tracks"
+      }
+    }
+  },
+  "services": {
+    "play_prompt": {
+      "name": "Play a Liora prompt",
+      "description": "Ask Liora for music matching a description and play it on this zone. The first track starts in about ten seconds; the rest of the queue follows about a minute later.",
+      "fields": {
+        "prompt": {
+          "name": "Prompt",
+          "description": "What to play, in your own words."
+        }
+      }
+    },
+    "start_radio": {
+      "name": "Start radio",
+      "description": "Play radio built from an artist, or from the artist playing on this zone now.",
+      "fields": {
+        "artist": {
+          "name": "Artist",
+          "description": "Leave empty to use the artist playing now."
+        }
+      }
+    },
+    "play_search": {
+      "name": "Play from the library",
+      "description": "Play the best match in the Lyr library for a name, the way Siri does.",
+      "fields": {
+        "query": {
+          "name": "Name",
+          "description": "An album, artist, playlist, track or genre."
+        },
+        "kind": {
+          "name": "Kind",
+          "description": "Only match this kind of item."
+        },
+        "shuffle": {
+          "name": "Shuffle",
+          "description": "Shuffle the tracks."
+        }
+      }
+    }
+  }
+}
