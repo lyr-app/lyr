@@ -1,0 +1,30 @@
+name: Tidy run history
+
+# Every Actions run records the account that started it. Runs here are started
+# from a personal account, so each finished run is deleted as soon as the
+# checks or a release complete, and once a day for anything missed. Only this
+# workflow's own latest run is ever left.
+on:
+  workflow_run:
+    workflows: [Validate, Release]
+    types: [completed]
+  schedule:
+    - cron: "17 3 * * *"
+  workflow_dispatch:
+
+permissions:
+  actions: write
+
+jobs:
+  tidy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Delete finished runs
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          SELF: ${{ github.run_id }}
+        run: |
+          gh api --paginate "repos/$REPO/actions/runs?status=completed&per_page=100" -q '.workflow_runs[].id' \
+            | { grep -vx "$SELF" || true; } \
+            | while read -r id; do gh api -X DELETE "repos/$REPO/actions/runs/$id" >/dev/null || true; done
