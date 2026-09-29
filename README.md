@@ -1,3 +1,5 @@
+<img src="https://raw.githubusercontent.com/lyr-app/lyr/main/custom_components/lyr/brand/icon@2x.png" alt="Lyr" width="96">
+
 # Lyr for Home Assistant
 
 Lyr zones as Home Assistant media players, driven through the **Lyr Core**
