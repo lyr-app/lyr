@@ -1,0 +1,25 @@
+name: Release
+
+# Run from the Actions tab. The release is published by github-actions, so no
+# personal account shows on the release page.
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Version, e.g. 0.1.0 (must match custom_components/lyr/manifest.json)"
+        required: true
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: The manifest carries the same version
+        run: test "$(jq -r .version custom_components/lyr/manifest.json)" = "${{ inputs.version }}"
+      - name: Publish
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release create "v${{ inputs.version }}" --target "$GITHUB_SHA" --title "${{ inputs.version }}" --generate-notes
